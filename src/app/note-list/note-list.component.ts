@@ -13,15 +13,15 @@ export class NoteListComponent {
   status: "notes" | "trash" = "notes";
 
   constructor(private noteService: NoteListService) {
-    this.noteList = this.getDummyData()
+    this.noteList = this.getDummyData();
   }
 
-  changeFavFilter(filter:"all" | "fav"){
+  changeFavFilter(filter: "all" | "fav") {
     this.favFilter = filter;
   }
 
-  changeTrashStatus(){
-    if(this.status == "trash"){
+  changeTrashStatus() {
+    if (this.status == "trash") {
       this.status = "notes";
     } else {
       this.status = "trash";
