@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Note } from '../interfaces/note.interface';
-import { Firestore, collection, collectionData, doc, onSnapshot } from '@angular/fire/firestore';
+import { Firestore, addDoc, collection, collectionData, doc, onSnapshot } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root'
@@ -12,34 +12,45 @@ export class NoteListService {
 
   firestore: Firestore = inject(Firestore);
 
-  items$;
-  items;
-
-  unsubList;
-  unsubSingle;
+  unsubNotes;
+  unsubTrash;
 
   constructor() {
 
-    this.unsubList = onSnapshot(this.getNotesRef(), (list) => {
+    this.unsubNotes = this.subNotesList();
+    this.unsubTrash = this.subTrahsList();
+
+  }
+
+  addNote(item: {}) {
+    addDoc(this.getNotesRef(), item).catch(
+      (err) => { console.error(err) })
+      .then((docRef) => { console.log("Document written with ID: ", docRef?.id) })
+  }
+
+  subNotesList() {
+    return onSnapshot(this.getNotesRef(), (list) => {
+      this.normalNotes = [];
       list.forEach(element => {
-        console.log(element);
+        this.normalNotes.push(this.setNoteObject(element.data(), element.id));
+        ;
       });
     });
+  }
 
-    this.unsubSingle = onSnapshot(this.getSingleDocRef('notes', 'oc1JCrw4btW5EQCHFKOt'), (list) => { 
-      console.log(list.data());
-    })
-
-    this.items$ = collectionData(this.getNotesRef());
-    this.items = this.items$.subscribe((list) => {
+  subTrahsList() {
+    return onSnapshot(this.getTrashRef(), (list) => {
+      this.trashNotes = [];
       list.forEach(element => {
-        console.log(element);
+        this.trashNotes.push(this.setNoteObject(element.data(), element.id));
+        ;
       });
     });
   }
 
   ngonDestroy() {
-    this.items.unsubscribe();
+    this.unsubNotes();
+    this.unsubTrash();
   }
 
   getTrashRef() {
@@ -52,5 +63,15 @@ export class NoteListService {
 
   getSingleDocRef(colId: string, docId: string) {
     return doc(collection(this.firestore, colId), docId)
+  }
+
+  setNoteObject(obj: any, id: string): Note {
+    return {
+      id: id,
+      type: obj.type || "note",
+      title: obj.title || "",
+      content: obj.content || "",
+      marked: obj.marked || false,
+    }
   }
 }
