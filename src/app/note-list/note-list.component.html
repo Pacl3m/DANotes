@@ -24,10 +24,7 @@
             </button>
        </div>
     </div>
-    <div *ngIf="status != 'trash'"  >
+        <div>
         <app-note *ngFor="let note of getList()" [note]="note"></app-note>
-    </div>
-    <div *ngIf="status == 'trash'"  >
-        <app-note *ngFor="let note of getTrash()" [note]="note"></app-note>
     </div>
 </div>
