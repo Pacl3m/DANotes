@@ -83,8 +83,10 @@ export class NoteListService {
 
   subNotesList() {
     return onSnapshot(this.getNotesRef(), (list) => {
+      console.log(list); // Hier spuckt er die Rohdaten aus
       this.normalNotes = [];
       list.forEach(element => {
+        console.log(element.data());
         this.normalNotes.push(this.setNoteObject(element.data(), element.id));
       });
     });
