@@ -129,7 +129,7 @@ export class NoteListService {
   }
 
   getSingleDocRef(colId: string, docId: string) {
-    return doc(collection(this.firestore, colId), docId)
+    return doc(collection(this.firestore, colId), docId);
   }
 
   setNoteObject(obj: any, id: string): Note {
