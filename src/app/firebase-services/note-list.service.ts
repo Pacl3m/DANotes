@@ -117,7 +117,7 @@ export class NoteListService {
   }
 
   getRef(colId: string) {
-      return collection(this.firestore, colId);
+    return collection(this.firestore, colId);
   }
 
   getTrashRef() {
